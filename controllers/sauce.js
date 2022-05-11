@@ -24,6 +24,9 @@ exports.getAllSauces = (req, res, next) => {
     exports.addOneSauce = (req, res, next) => {
         const sauceObject = JSON.parse(req.body.sauce)
         delete sauceObject._id;
+        sauceObject.likes = 0;
+        sauceObject.dislikes = 0;
+        
         const sauce = new Sauce({
             ...sauceObject,
             imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
@@ -34,6 +37,7 @@ exports.getAllSauces = (req, res, next) => {
     };
     
     exports.getOneSauce = (req, res, next) => {
+        console.log(' getOneSauce Requête reçue !');
         Sauce.findOne({ _id: req.params.id })
         .then(sauce => res.status(200).json(sauce))
         .catch(error => res.status(404).json({ error }));
@@ -55,6 +59,8 @@ exports.getAllSauces = (req, res, next) => {
     
     exports.updateOneSauce = (req, res, next) => {
         console.log(' updateOneSauce Requête reçue !');
+        // La méthode JSON.parse() analyse une chaîne de caractères JSON et construit la valeur JavaScript 
+        // ou l'objet décrit par cette chaîne
         const sauceObject = req.file ?
         {
             ...JSON.parse(req.body.sauce),
@@ -64,19 +70,92 @@ exports.getAllSauces = (req, res, next) => {
         .then(() => res.status(200).json({ message: 'Objet modifié !'}))
         .catch(error => res.status(400).json({ error }));
     };
-
+    
     exports.like = (req, res, next) => {
-        // const sauceObject = JSON.parse(req.body.sauce)
-        // delete sauceObject._id;
-        // const sauce = new Sauce({
-        //     ...sauceObject,
-        //     imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-        // });
-        // sauce.save()
-        // .then(() => res.status(201).json({ message: 'Sauce enregistrée !'}))
-        // .catch(error => res.status(400).json({ error }));
-    };
+        //    const sauceObject ={ ...req.body };
+        console.log("(sauceObject.userId :" + req.body.userId);
+        console.log("(sauceObject.like :" + req.body.like);
+        
+        var userId = req.body.userId;
+        var like = req.body.like;
+        
+        
+        Sauce.findOne({ _id: req.params.id })
+        
+        .then(sauce => {
 
+            let userId_found = false;
+            // recherche userId dans tableau usersLiked
+            sauce.usersLiked.forEach(userLiked => {
+                console.log("for each sauce usersLiked len : "+ userLiked);
+                if( userId == userLiked)
+                {
+                    userId_found = true;
+                    if( like == 0) // supression du like
+                    {
+                        if(sauce.likes>0)
+                        {
+                            sauce.likes -= 1;
+                            let pos = sauce.usersLiked.indexOf(userId);
+                            sauce.usersLiked.splice(pos, 1);
+                        }
+                        
+                    }
+                }
+            } );
+            
+            if( !userId_found ) // ajout du like
+            {
+                if( like == 1){
+                    sauce.likes += 1;
+                    sauce.usersLiked.push(userId); // ajout dans le tableau
+                }
+            }
+            
+            
+            // recherche userId dans tableau usersDisliked
+            sauce.usersDisliked.forEach(userDisliked => {
+                console.log("for each sauce usersDisliked len : "+ userDisliked);
+                if( userId == userDisliked)
+                {
+                    userId_found = true;
+                    if( like == 0) // supression du dislike
+                    {
+                        if(sauce.dislikes>0)
+                        {
+                            sauce.dislikes -= 1;
+                            let pos = sauce.usersDisliked.indexOf(userId);
+                            sauce.usersDisliked.splice(pos, 1);
+                        }
+                        
+                    }
+                }
+            } );
+
+            if( !userId_found ) // ajout du dislike
+            {
+                if( like == -1){
+                    sauce.dislikes += 1;
+                    sauce.usersDisliked.push(userId); // ajout dans le tableau
+                }
+            }
+            
+            const sauceObject =
+            {
+                likes:sauce.likes,
+                dislikes:sauce.dislikes,
+                usersLiked:sauce.usersLiked,
+                usersDisliked:sauce.usersDisliked
+            };
+            
+            
+            Sauce.updateOne({ _id: req.params.id }, {...sauceObject , _id: req.params.id } )
+            .then(() => res.status(200).json({ message: 'sauce évaluée !'}))
+            .catch(error => res.status(400).json({ error }));  
+        })
+        .catch(error => res.status(500).json({ error }));
+    };
+    
     
     
     
