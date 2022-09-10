@@ -30,4 +30,9 @@ mongoose.connect('mongodb+srv://zozo:WA6MBsxMhvrHmeYL@cluster0.afoop.mongodb.net
   const sauceRoutes = require('./routes/sauce');
   app.use('/api/sauces', sauceRoutes);
 
+  app.all('/', (req, res) => {
+    console.log("Just got a request!")
+    res.send('Yo!')
+})
+
   module.exports = app;
