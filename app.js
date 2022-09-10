@@ -14,7 +14,7 @@ app.use((req, res, next) => {
 app.use(bodyParser.json());
 
 const mongoose = require('mongoose');
-mongoose.connect('mongodb+srv://zozo:KXQPFVHEsPkS8MAq@cluster0.afoop.mongodb.net/test?retryWrites=true&w=majority',
+mongoose.connect('mongodb+srv://zozo:WA6MBsxMhvrHmeYL@cluster0.afoop.mongodb.net/test',
   { useNewUrlParser: true,
     useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))
