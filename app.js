@@ -20,7 +20,7 @@ mongoose.connect('mongodb+srv://zozo:WA6MBsxMhvrHmeYL@cluster0.afoop.mongodb.net
   .then(() => console.log('Connexion à MongoDB réussie !'))
   .catch(() => console.log('Connexion à MongoDB échouée !'));
 
-  app.use('/images', express.static(path.join(__dirname, 'images')));
+  app.use('/images', express.static(path.resolve(__dirname, 'images')));
 
   console.log("path : " + path + "__dirname : " + __dirname);
 
