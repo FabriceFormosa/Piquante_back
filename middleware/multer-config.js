@@ -24,5 +24,7 @@ const storage = multer.diskStorage({
 });
 
 console.log("multer storage:",storage)
+console.log("multer storage.destination:",storage.destination)
+console.log("multer storage.diskStorage:",storage.diskStorage)
 
 module.exports = multer({storage: storage}).single('image');
