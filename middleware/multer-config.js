@@ -9,7 +9,7 @@ const MIME_TYPES = {
 // Methods to display directory
 console.log("multer-config.js __dirname:    ", __dirname);
 console.log("multer-config.js process.cwd() : ", process.cwd());
-console.log("multer-config.js ./ : ", path.resolve("./"));
+//console.log("multer-config.js ./ : ", path.resolve("./"));
 console.log("multer-config.js filename: ", __filename);
 
 const storage = multer.diskStorage({
