@@ -3,7 +3,11 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const app = express();
 
-
+// Methods to display directory
+console.log("app.js __dirname:    ", __dirname);
+console.log("app.js process.cwd() : ", process.cwd());
+console.log("app.js ./ : ", path.resolve("./"));
+console.log("app.js filename: ", __filename);
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
